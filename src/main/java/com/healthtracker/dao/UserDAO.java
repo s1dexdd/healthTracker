@@ -11,12 +11,12 @@ import java.sql.Statement;
 
 public class UserDAO {
 
-
-
+    // ✅ ИСПРАВЛЕНО: Заменено USER на "USER"
     private static final String INSERT_USERS_SQL =
-            "INSERT INTO Users (name, height_cm, start_weight_kg, target_weight_kg) VALUES (?, ?, ?, ?)";
+            "INSERT INTO \"USER\" (name, height_cm, start_weight_kg, target_weight_kg) VALUES (?, ?, ?, ?)";
+    // ✅ ИСПРАВЛЕНО: Заменено USER на "USER"
     private static final String SELECT_USER_BY_ID =
-            "SELECT user_id, name, height_cm, start_weight_kg, target_weight_kg FROM Users WHERE user_id=?";
+            "SELECT user_id, name, height_cm, start_weight_kg, target_weight_kg FROM \"USER\" WHERE user_id=?";
 
     public int insertUser(User user) {
         // Код insertUser

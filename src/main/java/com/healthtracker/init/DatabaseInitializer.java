@@ -1,48 +1,65 @@
 package com.healthtracker.init;
+
 import com.healthtracker.util.DBConfig;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.sql.SQLException;
+
 public class DatabaseInitializer {
+    // ✅ ИСПРАВЛЕНО: Таблица "USER" заключена в кавычки
     private static final  String CREATE_USERS_TABLE=
-            "CREATE TABLE IF NOT EXISTS Users (" +
-            "user_id INT PRIMARY KEY AUTO_INCREMENT," +
-            "name VARCHAR(100) NOT NULL," +
-            "height_cm INT NOT NULL," +
-            "start_weight_kg DECIMAL(5,2) NOT  NULL," +
-            "target_weight_kg DECIMAL(5,2) NOT  NULL" +
-            ");";
+            "CREATE TABLE IF NOT EXISTS \"USER\" (" +
+                    "user_id INT PRIMARY KEY AUTO_INCREMENT," +
+                    "name VARCHAR(100) NOT NULL," +
+                    "height_cm INT NOT NULL," +
+                    "start_weight_kg DECIMAL(5,2) NOT NULL," +
+                    "target_weight_kg DECIMAL(5,2) NOT NULL" +
+                    ");";
+    // ✅ ИСПРАВЛЕНО: Таблица "FOOD_LOG" заключена в кавычки, ссылка на "USER"
     private static final String CREATE_FOOD_LOG_TABLE=
-            "CREATE TABLE IF NOT EXISTS Food_log (" +
-            "food_id INT PRIMARY KEY AUTO_INCREMENT," +
-            "user_id INT NOT NULL," +
-            "log_date DATE NOT NULL," +
-            "description VARCHAR(255) NOT NULL," +
-            "calories INT NOT NULL," +
-            "protein_g DECIMAL (5,1)," +
-            "fats_g DECIMAL (5,1)," +
-            "carbs_g DECIMAL (5,1)," +
-            "FOREIGN KEY (user_id) REFERENCES Users(user_id)"+
-            ");";
+            "CREATE TABLE IF NOT EXISTS \"FOOD_LOG\" (" +
+                    "food_id INT PRIMARY KEY AUTO_INCREMENT," +
+                    "user_id INT NOT NULL," +
+                    "log_date DATE NOT NULL," +
+                    "description VARCHAR(255) NOT NULL," +
+                    "calories INT NOT NULL," +
+                    "protein_g DECIMAL (5,1)," +
+                    "fats_g DECIMAL (5,1)," +
+                    "carbs_g DECIMAL (5,1)," +
+                    "FOREIGN KEY (user_id) REFERENCES \"USER\"(user_id) ON DELETE CASCADE" +
+                    ");";
+    // ✅ ИСПРАВЛЕНО: Таблица "WORKOUT_LOG" заключена в кавычки, ссылка на "USER"
     private static final String CREATE_WORKOUT_LOG_TABLE=
-            "CREATE TABLE IF NOT EXISTS Workout_Log (" +
-            "workout_id INT PRIMARY KEY AUTO_INCREMENT," +
-            "user_id INT NOT NULL," +
-            "log_date DATE NOT NULL," +
-            "type VARCHAR(100) NOT NULL," +
-            "duration_minutes INT NOT NULL," +
-            "calories_burned INT NOT NULL," +
-            "FOREIGN KEY (user_id) REFERENCES Users(user_id)"+
-            ");";
+            "CREATE TABLE IF NOT EXISTS \"WORKOUT_LOG\" (" +
+                    "workout_id INT PRIMARY KEY AUTO_INCREMENT," +
+                    "user_id INT NOT NULL," +
+                    "log_date DATE NOT NULL," +
+                    "type VARCHAR(100) NOT NULL," +
+                    "duration_minutes INT NOT NULL," +
+                    "calories_burned INT NOT NULL," +
+                    "FOREIGN KEY (user_id) REFERENCES \"USER\"(user_id) ON DELETE CASCADE" +
+                    ");";
+    // ✅ ИСПРАВЛЕНО: Таблица "WEIGHT_LOG" заключена в кавычки, ссылка на "USER"
+    private static final String CREATE_WEIGHT_LOG_TABLE_SQL =
+            "CREATE TABLE IF NOT EXISTS \"WEIGHT_LOG\" (" +
+                    "  log_id INT AUTO_INCREMENT PRIMARY KEY," +
+                    "  user_id INT NOT NULL," +
+                    "  log_date DATE NOT NULL," +
+                    "  current_weight_kg DECIMAL(5, 2) NOT NULL," +
+                    "  FOREIGN KEY (user_id) REFERENCES \"USER\"(user_id) ON DELETE CASCADE" +
+                    ")";
+
     public static void initialise(){
         try (Connection connection=DBConfig.getConnection();
-            Statement statement = connection.createStatement()){
+             Statement statement = connection.createStatement()){
             statement.executeUpdate(CREATE_USERS_TABLE);
             statement.executeUpdate(CREATE_FOOD_LOG_TABLE);
             statement.executeUpdate(CREATE_WORKOUT_LOG_TABLE);
+            statement.executeUpdate(CREATE_WEIGHT_LOG_TABLE_SQL);
             System.out.println("база данных готова к работе");
         }catch(SQLException e){
             System.err.println("ошибка при инициализации базы данных");
+            e.printStackTrace();
         }
     }
 }
