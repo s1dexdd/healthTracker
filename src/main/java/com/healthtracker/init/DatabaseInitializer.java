@@ -16,16 +16,27 @@ public class DatabaseInitializer {
                     "target_weight_kg DECIMAL(5,2) NOT NULL" +
                     ");";
 
-    private static final String CREATE_FOOD_LOG_TABLE=
+    private static final String CREATE_FOOD_LOG_TABLE =
             "CREATE TABLE IF NOT EXISTS \"FOOD_LOG\" (" +
                     "food_id INT PRIMARY KEY AUTO_INCREMENT," +
                     "user_id INT NOT NULL," +
-                    "log_date DATE NOT NULL," +
+                    "log_date TIMESTAMP NOT NULL," +
                     "description VARCHAR(255) NOT NULL," +
+                    "meal_type VARCHAR(50) NOT NULL,"+
+
+
+                    "calories_per_100g INT NOT NULL," +
+                    "protein_per_100g DECIMAL(5,1)," +
+                    "fats_per_100g DECIMAL(5,1)," +
+                    "carbs_per_100g DECIMAL(5,1)," +
+                    "portion_size_grams INT NOT NULL," +
+
+
                     "calories INT NOT NULL," +
-                    "protein_g DECIMAL (5,1)," +
-                    "fats_g DECIMAL (5,1)," +
-                    "carbs_g DECIMAL (5,1)," +
+                    "protein_g DECIMAL(5,1)," +
+                    "fats_g DECIMAL(5,1)," +
+                    "carbs_g DECIMAL(5,1)," +
+
                     "FOREIGN KEY (user_id) REFERENCES \"USER\"(user_id) ON DELETE CASCADE" +
                     ");";
 
