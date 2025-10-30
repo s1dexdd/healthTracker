@@ -11,10 +11,10 @@ import java.sql.Date;
 
 public class WeightLogDAO {
     private static final String INSERT_LOG_SQL =
-            // ✅ ИСПРАВЛЕНО: Таблица теперь WEIGHT_LOG
+
             "INSERT INTO WEIGHT_LOG ( user_id, log_date, current_weight_kg ) VALUES (?, ?, ?)";
     private static final String SELECT_LATEST_WEIGHT_SQL =
-            // ✅ ИСПРАВЛЕНО: Таблица теперь WEIGHT_LOG
+
             "SELECT current_weight_kg FROM WEIGHT_LOG WHERE user_id= ? ORDER BY log_date DESC, log_id DESC LIMIT 1";
 
     public void insertWeightLog(WeightLog log) {
@@ -31,7 +31,7 @@ public class WeightLogDAO {
         }
     }
 
-    // Входящий параметр исправлен на userId (маленькая буква)
+
     public BigDecimal getLatestWeight(int userId) {
         BigDecimal latestWeight = null;
         try (Connection connection = DBConfig.getConnection();

@@ -11,15 +11,15 @@ import java.sql.Statement;
 
 public class UserDAO {
 
-    // ✅ ИСПРАВЛЕНО: Заменено USER на "USER"
+
     private static final String INSERT_USERS_SQL =
             "INSERT INTO \"USER\" (name, height_cm, start_weight_kg, target_weight_kg) VALUES (?, ?, ?, ?)";
-    // ✅ ИСПРАВЛЕНО: Заменено USER на "USER"
+
     private static final String SELECT_USER_BY_ID =
             "SELECT user_id, name, height_cm, start_weight_kg, target_weight_kg FROM \"USER\" WHERE user_id=?";
 
     public int insertUser(User user) {
-        // Код insertUser
+
         try (Connection connection = DBConfig.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_USERS_SQL, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setString(1, user.getName());

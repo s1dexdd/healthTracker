@@ -6,7 +6,7 @@ import java.sql.Statement;
 import java.sql.SQLException;
 
 public class DatabaseInitializer {
-    // ✅ ИСПРАВЛЕНО: Таблица "USER" заключена в кавычки
+
     private static final  String CREATE_USERS_TABLE=
             "CREATE TABLE IF NOT EXISTS \"USER\" (" +
                     "user_id INT PRIMARY KEY AUTO_INCREMENT," +
@@ -15,7 +15,7 @@ public class DatabaseInitializer {
                     "start_weight_kg DECIMAL(5,2) NOT NULL," +
                     "target_weight_kg DECIMAL(5,2) NOT NULL" +
                     ");";
-    // ✅ ИСПРАВЛЕНО: Таблица "FOOD_LOG" заключена в кавычки, ссылка на "USER"
+
     private static final String CREATE_FOOD_LOG_TABLE=
             "CREATE TABLE IF NOT EXISTS \"FOOD_LOG\" (" +
                     "food_id INT PRIMARY KEY AUTO_INCREMENT," +
@@ -28,7 +28,7 @@ public class DatabaseInitializer {
                     "carbs_g DECIMAL (5,1)," +
                     "FOREIGN KEY (user_id) REFERENCES \"USER\"(user_id) ON DELETE CASCADE" +
                     ");";
-    // ✅ ИСПРАВЛЕНО: Таблица "WORKOUT_LOG" заключена в кавычки, ссылка на "USER"
+
     private static final String CREATE_WORKOUT_LOG_TABLE=
             "CREATE TABLE IF NOT EXISTS \"WORKOUT_LOG\" (" +
                     "workout_id INT PRIMARY KEY AUTO_INCREMENT," +
@@ -39,7 +39,7 @@ public class DatabaseInitializer {
                     "calories_burned INT NOT NULL," +
                     "FOREIGN KEY (user_id) REFERENCES \"USER\"(user_id) ON DELETE CASCADE" +
                     ");";
-    // ✅ ИСПРАВЛЕНО: Таблица "WEIGHT_LOG" заключена в кавычки, ссылка на "USER"
+
     private static final String CREATE_WEIGHT_LOG_TABLE_SQL =
             "CREATE TABLE IF NOT EXISTS \"WEIGHT_LOG\" (" +
                     "  log_id INT AUTO_INCREMENT PRIMARY KEY," +

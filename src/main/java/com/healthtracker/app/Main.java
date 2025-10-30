@@ -13,12 +13,10 @@ import java.time.LocalDate;
 public class Main {
     public static void main(String[] args){
 
-        // ИНИЦИАЛИЗАЦИЯ БАЗЫ ДАННЫХ
+
         DatabaseInitializer.initialise();
 
-        // ------------------------------------------
-        //          ТЕСТ 1 & 2: UserDAO
-        // ------------------------------------------
+
         System.out.println("\n тест добавления пользователя \n");
 
         BigDecimal startWeight = new BigDecimal("85.5");
@@ -44,13 +42,11 @@ public class Main {
             System.out.println(fetchedUser);
             testingUserId = fetchedUser.getUserId();
 
-            // ------------------------------------------
-            //          ТЕСТ 3 & 4: WeightLogDAO
-            // ------------------------------------------
+
             System.out.println("\n--- Тест 3: Логирование веса ---");
             WeightLogDAO weightLogDAO = new WeightLogDAO();
 
-            // 1. Запись старого веса
+
             LocalDate twoWeeksAgo = LocalDate.now().minusDays(14);
             WeightLog logOld = new WeightLog(
                     testingUserId,
@@ -59,7 +55,7 @@ public class Main {
             );
             weightLogDAO.insertWeightLog(logOld);
 
-            // 2. Запись текущего веса (сегодня)
+
             LocalDate today = LocalDate.now();
             WeightLog logToday = new WeightLog(
                     testingUserId,
@@ -68,9 +64,7 @@ public class Main {
             );
             weightLogDAO.insertWeightLog(logToday);
 
-            // --- Тест 4: Получение текущего веса ---
             System.out.println("\n--- Тест 4: Получение текущего веса ---");
-
 
             BigDecimal currentWeight = weightLogDAO.getLatestWeight(testingUserId);
 
