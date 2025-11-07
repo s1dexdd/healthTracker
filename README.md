@@ -1,4 +1,4 @@
-s1de's Health Tracker
+# s1de's Health Tracker
 
 ![thumbnail](./01.png)
 
