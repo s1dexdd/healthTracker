@@ -1,3 +1,7 @@
+s1de's Health Tracker
+
+![thumbnail](./01.png)
+
 # Инструкция
 
  Как запустить приложение (Linux):
