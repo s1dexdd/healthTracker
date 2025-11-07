@@ -13,7 +13,10 @@ public class DatabaseInitializer {
                     "name VARCHAR(100) NOT NULL," +
                     "height_cm INT NOT NULL," +
                     "start_weight_kg DECIMAL(5,2) NOT NULL," +
-                    "target_weight_kg DECIMAL(5,2) NOT NULL" +
+                    "target_weight_kg DECIMAL(5,2) NOT NULL," +
+                    "age INT NOT NULL," +
+                    "gender VARCHAR(10) NOT NULL," +
+                    "activity_level VARCHAR(10) NOT NULL" +
                     ");";
 
     private static final String CREATE_FOOD_LOG_TABLE =
@@ -48,6 +51,7 @@ public class DatabaseInitializer {
                     "type VARCHAR(100) NOT NULL," +
                     "duration_minutes INT NOT NULL," +
                     "calories_burned INT NOT NULL," +
+                    "calories_burned_per_minute INT NOT NULL," +
                     "FOREIGN KEY (user_id) REFERENCES \"USER\"(user_id) ON DELETE CASCADE" +
                     ");";
 

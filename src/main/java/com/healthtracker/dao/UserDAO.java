@@ -13,10 +13,10 @@ public class UserDAO {
 
 
     private static final String INSERT_USERS_SQL =
-            "INSERT INTO \"USER\" (name, height_cm, start_weight_kg, target_weight_kg) VALUES (?, ?, ?, ?)";
+            "INSERT INTO \"USER\" (name, height_cm, start_weight_kg, target_weight_kg, age, gender, activity_level) VALUES (?, ?, ?, ?,?,?,?)";
 
     private static final String SELECT_USER_BY_ID =
-            "SELECT user_id, name, height_cm, start_weight_kg, target_weight_kg FROM \"USER\" WHERE user_id=?";
+            "SELECT user_id, name, height_cm, start_weight_kg, target_weight_kg, age, gender, activity_level FROM \"USER\" WHERE user_id=?";
 
     public int insertUser(User user) {
 
@@ -26,6 +26,9 @@ public class UserDAO {
             preparedStatement.setInt(2, user.getHeightCm());
             preparedStatement.setBigDecimal(3, user.getStartWeightKg());
             preparedStatement.setBigDecimal(4, user.getTargetWeightKg());
+            preparedStatement.setInt(5,user.getAge());
+            preparedStatement.setString(6,user.getGender().name());
+            preparedStatement.setString(7, user.getActivityLevel().name());
 
             preparedStatement.executeUpdate();
 
@@ -62,8 +65,11 @@ public class UserDAO {
                     int height = rs.getInt("height_cm");
                     BigDecimal startWeight = rs.getBigDecimal("start_weight_kg");
                     BigDecimal targetWeight = rs.getBigDecimal("target_weight_kg");
+                    int age =rs.getInt("age");
+                    User.Gender gender=User.Gender.valueOf(rs.getString("gender"));
+                    User.ActivityLevel activityLevel=User.ActivityLevel.valueOf(rs.getString("activity_level"));
 
-                    user = new User(id, name, height, startWeight, targetWeight);
+                    user = new User(id, name, height, startWeight, targetWeight, age, gender, activityLevel);
                 }
             }
         }catch (SQLException e){

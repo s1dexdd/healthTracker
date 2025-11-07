@@ -1,5 +1,6 @@
 package com.healthtracker.model;
 
+import com.healthtracker.model.WeightLog;
 import java.math.BigDecimal;
 import java.io.Serializable;
 
@@ -10,17 +11,44 @@ public class User implements Serializable {
     private int heightCm;
     private BigDecimal startWeightKg;
     private BigDecimal targetWeightKg;
+    private int age;
+    public enum Gender{
+        MALE,
+        FEMALE
+    }
+    public enum ActivityLevel{
+        SIT(1.2f),
+        LIGHT(1.375f),
+        MID(1.55f);
 
-    public User(int userId, String name, int heightCm, BigDecimal startWeightKg, BigDecimal targetWeightKg) {
+        private final float coefficient;
+
+        ActivityLevel(float coefficient) {
+            this.coefficient = coefficient;
+        }
+        public float getCoefficient() {
+            return coefficient;
+        }
+    }
+
+    private Gender gender;
+    private ActivityLevel activityLevel;
+
+
+
+    public User(int userId, String name, int heightCm, BigDecimal startWeightKg, BigDecimal targetWeightKg,int age, Gender gender, ActivityLevel activityLevel) {
         this.userId = userId;
         this.name = name;
         this.heightCm = heightCm;
         this.startWeightKg = startWeightKg;
         this.targetWeightKg = targetWeightKg;
+        this.age= age;
+        this.gender=gender;
+        this.activityLevel=activityLevel;
     }
 
-    public User(String name, int heightCm, BigDecimal startWeightKg, BigDecimal targetWeightKg) {
-        this(-1, name, heightCm, startWeightKg, targetWeightKg);
+    public User(String name, int heightCm, BigDecimal startWeightKg, BigDecimal targetWeightKg, int age,Gender gender,ActivityLevel activityLevel) {
+        this(-1, name, heightCm, startWeightKg, targetWeightKg, age, gender, activityLevel);
     }
 
     public int getUserId() {
@@ -63,9 +91,35 @@ public class User implements Serializable {
         this.targetWeightKg = targetWeightKg;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public ActivityLevel getActivityLevel() {
+        return activityLevel;
+    }
+
+    public void setActivityLevel(ActivityLevel activityLevel) {
+        this.activityLevel = activityLevel;
+    }
+
+
+
     @Override
     public String toString() {
         return "User [ID=" + userId + ", Name='" + name + "', Height=" + heightCm +
-                ", StartWeight=" + startWeightKg + ", TargetWeight=" + targetWeightKg + "]";
+                ", StartWeight=" + startWeightKg + ", TargetWeight=" + targetWeightKg + ", Age=" + age + ", Gender=" + gender + ", Activity level: " + activityLevel+ "]";
     }
 }
