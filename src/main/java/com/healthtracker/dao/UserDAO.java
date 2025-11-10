@@ -18,6 +18,9 @@ public class UserDAO {
     private static final String SELECT_USER_BY_ID =
             "SELECT user_id, name, height_cm, start_weight_kg, target_weight_kg, age, gender, activity_level FROM \"USER\" WHERE user_id=?";
 
+    private static final String UPDATE_USER_GOAL_SQL =
+            "UPDATE \"USER\" SET target_weight_kg = ?, activity_level = ? WHERE user_id = ?";
+
     public int insertUser(User user) {
 
         try (Connection connection = DBConfig.getConnection();
@@ -28,16 +31,15 @@ public class UserDAO {
             preparedStatement.setBigDecimal(4, user.getTargetWeightKg());
             preparedStatement.setInt(5,user.getAge());
             preparedStatement.setString(6,user.getGender().name());
-            preparedStatement.setString(7, user.getActivityLevel().name());
+            preparedStatement.setString(7,user.getActivityLevel().name());
 
-            preparedStatement.executeUpdate();
+            int affectedRows = preparedStatement.executeUpdate();
 
-            try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
-                if (rs.next()) {
-                    int generatedId = rs.getInt(1);
-                    user.setUserId(generatedId);
-                    System.out.println(" Пользователь " + user.getName() + " успешно добавлен c ID:"+ generatedId);
-                    return generatedId;
+            if (affectedRows > 0) {
+                try (ResultSet rs = preparedStatement.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1);
+                    }
                 }
             }
         } catch (SQLException e) {
@@ -77,5 +79,26 @@ public class UserDAO {
             e.printStackTrace();
         }
         return user;
+    }
+
+    public boolean updateUserGoal(int userId, BigDecimal targetWeight, User.ActivityLevel activityLevel){
+        boolean rowUpdated = false;
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_GOAL_SQL)) {
+
+            preparedStatement.setBigDecimal(1, targetWeight);
+            preparedStatement.setString(2, activityLevel.name());
+            preparedStatement.setInt(3, userId);
+
+
+            rowUpdated = preparedStatement.executeUpdate() > 0;
+            if (rowUpdated) {
+                System.out.println("Цель пользователя " + userId + " успешно обновлена.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Ошибка при обновлении цели пользователя с ID: " + userId);
+            e.printStackTrace();
+        }
+        return rowUpdated;
     }
 }

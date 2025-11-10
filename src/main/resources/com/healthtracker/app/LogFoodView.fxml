@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="450.0" spacing="15.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.healthtracker.controller.LogFoodController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <Label text="Записать прием пищи">
+        <font>
+            <Font name="System Bold" size="20.0" />
+        </font>
+    </Label>
+    <GridPane hgap="10.0" vgap="10.0">
+        <columnConstraints>
+            <javafx.scene.layout.ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
+            <javafx.scene.layout.ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="250.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <javafx.scene.layout.RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <javafx.scene.layout.RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <javafx.scene.layout.RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <javafx.scene.layout.RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <javafx.scene.layout.RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <javafx.scene.layout.RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <javafx.scene.layout.RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <javafx.scene.layout.RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <javafx.scene.layout.RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <children>
+            <Label text="Описание блюда:" />
+            <TextField fx:id="descriptionField" promptText="Например, Овсянка с ягодами" GridPane.columnIndex="1" />
+            <Label text="Тип приема пищи:" GridPane.rowIndex="1" />
+            <ComboBox fx:id="mealTypeComboBox" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label text="Калории (на 100 г):" GridPane.rowIndex="2" />
+            <TextField fx:id="caloriesPer100gField" promptText="Ккал (целое число)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Белки (на 100 г):" GridPane.rowIndex="3" />
+            <TextField fx:id="proteinPer100gField" promptText="Граммы (можно с десятичной точкой)" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label text="Жиры (на 100 г):" GridPane.rowIndex="4" />
+            <TextField fx:id="fatsPer100gField" promptText="Граммы" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Label text="Углеводы (на 100 г):" GridPane.rowIndex="5" />
+            <TextField fx:id="carbsPer100gField" promptText="Граммы" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label text="Порция (граммы):" GridPane.rowIndex="6" />
+            <TextField fx:id="portionSizeField" promptText="Вес порции (целое число)" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label text="Дата:" GridPane.rowIndex="7" />
+            <DatePicker fx:id="logDatePicker" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <Label text="Время (ЧЧ:ММ):" GridPane.rowIndex="8" />
+            <TextField fx:id="logTimeField" promptText="Например, 10:30" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+        </children>
+    </GridPane>
+    <Label fx:id="totalCaloriesLabel" text="Итого калорий: N/A" style="-fx-font-weight: bold; -fx-text-fill: #00796b;">
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Label>
+    <HBox alignment="CENTER" spacing="20.0">
+        <children>
+            <Button mnemonicParsing="false" onAction="#handleSaveFoodLog" prefWidth="150.0" text="Сохранить" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+            <Button mnemonicParsing="false" onAction="#handleCancel" prefWidth="150.0" text="Отмена" />
+        </children>
+        <VBox.margin>
+            <Insets top="10.0" />
+        </VBox.margin>
+    </HBox>
+</VBox>

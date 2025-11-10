@@ -4,8 +4,8 @@ import com.healthtracker.model.WorkoutLog;
 import com.healthtracker.util.DBConfig;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Date;
 
 public class WorkoutLogDAO {
 
@@ -34,37 +34,31 @@ public class WorkoutLogDAO {
             preparedStatement.setTimestamp(2, log.getLogDate());
             preparedStatement.setString(3, log.getType());
             preparedStatement.setInt(4, log.getDurationMinutes());
-            preparedStatement.setInt(5, log.getCaloriesBurned()); // Рассчитанное значение
-            preparedStatement.setInt(6, log.getCaloriesBurnedPerMinute()); // Интенсивность
+            preparedStatement.setInt(5, totalBurned);
+            preparedStatement.setInt(6, log.getCaloriesBurnedPerMinute());
 
             preparedStatement.executeUpdate();
 
-
-            System.out.println("запись активности добавлена: " + log.getType() +
-                    " (" + totalBurned + " ккал, длительность: " + log.getDurationMinutes() + " мин)");
-        } catch (SQLException e){
-            System.err.println("ошибка при добавлении активности: " + e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("ошибка при вставке записи о тренировке: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-
-    public int getDailyTotalBurned(int userId, Date date){
+    public int getDailyTotalBurned(int userId, Date date) {
         int totalBurned = 0;
-        try(Connection connection = DBConfig.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BURNED_CALORIES_BY_DATE)) {
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BURNED_CALORIES_BY_DATE)) {
 
             preparedStatement.setInt(1, userId);
-            // Преобразуем java.util.Date в java.sql.Date
             preparedStatement.setDate(2, new java.sql.Date(date.getTime()));
 
-            try(ResultSet rs = preparedStatement.executeQuery()){
-                if (rs.next()){
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
                     totalBurned = rs.getInt("total_burned");
                 }
             }
-
-        } catch (SQLException e){
+        } catch (SQLException e) {
             System.err.println("ошибка при получении калорий сожженных за день: " + e.getMessage());
             e.printStackTrace();
         }
@@ -82,6 +76,7 @@ public class WorkoutLogDAO {
 
             try(ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()){
+
                     WorkoutLog log = new WorkoutLog(
                             rs.getInt("workout_id"),
                             rs.getInt("user_id"),
@@ -89,7 +84,7 @@ public class WorkoutLogDAO {
                             rs.getString("type"),
                             rs.getInt("duration_minutes"),
                             rs.getInt("calories_burned"),
-                            rs.getInt("calories_burned_per_minute") // Извлечение интенсивности
+                            rs.getInt("calories_burned_per_minute")
                     );
                     logs.add(log);
                 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="root" alignment="CENTER" prefHeight="200.0" prefWidth="350.0" spacing="15.0" style="-fx-background-color: #f7f7f7;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.healthtracker.controller.LogWeightController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <Label text="Запись текущего веса" textFill="#2d4059">
+        <font>
+            <Font name="System Bold" size="20.0" />
+        </font>
+    </Label>
+    <Label fx:id="dateLabel" style="-fx-font-weight: bold;" text="Дата: 2024-01-01" textFill="#e94e77">
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Label>
+    <VBox spacing="5.0">
+        <Label text="Вес (кг):" textFill="#5b5b5b" />
+        <TextField fx:id="weightField" promptText="Введите вес, например, 75.5" style="-fx-border-color: #b3e0ff; -fx-border-radius: 5; -fx-padding: 8;" />
+    </VBox>
+    <HBox alignment="CENTER_RIGHT" spacing="10.0">
+        <Button mnemonicParsing="false" onAction="#handleCancel" style="-fx-background-color: #cccccc; -fx-text-fill: #333333; -fx-background-radius: 5; -fx-padding: 8 15;" text="Отмена" />
+        <Button mnemonicParsing="false" onAction="#handleSaveWeight" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;" text="Сохранить" />
+    </HBox>
+</VBox>

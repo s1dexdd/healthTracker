@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<VBox alignment="CENTER" prefHeight="450.0" prefWidth="350.0" spacing="10.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.healthtracker.controller.LoginController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <Label text="Health Tracker - Вход и Регистрация">
+        <font>
+            <Font name="System Bold" size="20.0" />
+        </font>
+    </Label>
+
+
+    <Label style="-fx-font-weight: bold;" text="1. Вход (для существующих пользователей):" />
+    <TextField fx:id="userIdField" promptText="Ваш UserID (число)" />
+    <Button mnemonicParsing="false" onAction="#handleLogin" prefHeight="30.0" prefWidth="300.0" style="-fx-background-color: #2a62ff; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;" text="Войти" />
+
+    <Label text="---" />
+
+
+    <Label style="-fx-font-weight: bold;" text="2. Регистрация (создать новый профиль):" />
+    <TextField fx:id="usernameField" promptText="Имя" />
+    <TextField fx:id="heightField" promptText="Рост в см (например, 175)" />
+    <TextField fx:id="startWeightField" promptText="Начальный Вес в кг (например, 75.5)" />
+
+
+    <Label fx:id="messageLabel" minHeight="20.0" style="-fx-text-fill: #ff4444; -fx-font-weight: bold;" />
+
+    <Button mnemonicParsing="false" onAction="#handleRegister" prefHeight="30.0" prefWidth="300.0" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;" text="Зарегистрироваться" />
+
+</VBox>

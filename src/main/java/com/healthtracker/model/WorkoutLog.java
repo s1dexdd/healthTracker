@@ -2,9 +2,8 @@ package com.healthtracker.model;
 
 import java.sql.Timestamp;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
-public class WorkoutLog implements Serializable{
+public class WorkoutLog implements Serializable {
     private int workoutId;
     private int userId;
     private Timestamp logDate;
@@ -22,25 +21,15 @@ public class WorkoutLog implements Serializable{
         this.caloriesBurned = caloriesBurned;
         this.caloriesBurnedPerMinute = caloriesBurnedPerMinute;
     }
-    private static int calculateBurned(int durationMinutes,int caloriesBurnedPerMinute) {
-        if(durationMinutes<=0 || caloriesBurnedPerMinute<=0)return 0;
+
+    public WorkoutLog(int userId, String type, int durationMinutes, int caloriesBurnedPerMinute) {
+        this(-1, userId, new Timestamp(System.currentTimeMillis()), type, durationMinutes, 0, caloriesBurnedPerMinute);
+        this.caloriesBurned = calculateTotalBurned();
+    }
+
+    public int calculateTotalBurned() {
         return durationMinutes * caloriesBurnedPerMinute;
     }
-
-    public WorkoutLog(int userId, String type, int durationMinutes, int caloriesBurnedPerMinute){
-        this(-1,
-                userId,
-                Timestamp.valueOf(LocalDateTime.now()),
-                type,
-                durationMinutes,
-                calculateBurned(durationMinutes,caloriesBurnedPerMinute),
-                caloriesBurnedPerMinute );
-
-    }
-    public int calculateTotalBurned(){
-        return this.caloriesBurned;
-    }
-
 
     public int getWorkoutId() {
         return workoutId;
@@ -74,6 +63,7 @@ public class WorkoutLog implements Serializable{
         this.type = type;
     }
 
+    // Поле для колонки "время"
     public int getDurationMinutes() {
         return durationMinutes;
     }
@@ -81,6 +71,7 @@ public class WorkoutLog implements Serializable{
     public void setDurationMinutes(int durationMinutes) {
         this.durationMinutes = durationMinutes;
     }
+
 
     public int getCaloriesBurned() {
         return caloriesBurned;
@@ -90,6 +81,7 @@ public class WorkoutLog implements Serializable{
         this.caloriesBurned = caloriesBurned;
     }
 
+
     public int getCaloriesBurnedPerMinute() {
         return caloriesBurnedPerMinute;
     }
@@ -98,5 +90,3 @@ public class WorkoutLog implements Serializable{
         this.caloriesBurnedPerMinute = caloriesBurnedPerMinute;
     }
 }
-
-

@@ -25,38 +25,36 @@ public class FoodLogDAO {
     public void insertFoodLog(FoodLog log) {
 
         int totalCalories = log.calculateTotalCalories();
-        BigDecimal totalProtein = log.getTotalProteinG();
-        BigDecimal totalFats = log.getTotalFatsG();
-        BigDecimal totalCarbs = log.getTotalCarbsG();
+        BigDecimal totalProtein = log.calculateTotalProtein();
+        BigDecimal totalFats = log.calculateTotalFats();
+        BigDecimal totalCarbs = log.calculateTotalCarbs();
 
         try (Connection connection = DBConfig.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_LOG_SQL)) {
-
-
             preparedStatement.setInt(1, log.getUserId());
             preparedStatement.setTimestamp(2, log.getLogDate());
             preparedStatement.setString(3, log.getDescription());
-            preparedStatement.setString(4,log.getMealType());
+            preparedStatement.setString(4, log.getMealType());
             preparedStatement.setInt(5, log.getCaloriesPer100g());
             preparedStatement.setBigDecimal(6, log.getProteinPer100g());
             preparedStatement.setBigDecimal(7, log.getFatsPer100g());
             preparedStatement.setBigDecimal(8, log.getCarbsPer100g());
             preparedStatement.setInt(9, log.getPortionSizeGrams());
+            // Новые поля для рассчитанных значений
             preparedStatement.setInt(10, totalCalories);
             preparedStatement.setBigDecimal(11, totalProtein);
             preparedStatement.setBigDecimal(12, totalFats);
             preparedStatement.setBigDecimal(13, totalCarbs);
 
             preparedStatement.executeUpdate();
-            System.out.println("Запись еды добавлена: " + log.getDescription() + " (" + totalCalories + " ккал, порция: " + log.getPortionSizeGrams() + "г)");
+
         } catch (SQLException e) {
-            System.err.println("Ошибка при добавлении записи еды");
+            System.err.println("Ошибка при вставке записи о еде: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
     public int getDailyTotalCalories(int userId, Date date) {
-
         int totalCalories = 0;
         try (Connection connection = DBConfig.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_DAILY_CALORIES_SQL)) {
@@ -70,8 +68,7 @@ public class FoodLogDAO {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("Ошибка при получении суточного итога калорий: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Ошибка при получении ежедневного количества калорий: " + e.getMessage());
         }
         return totalCalories;
     }
@@ -89,6 +86,7 @@ public class FoodLogDAO {
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 while (rs.next()) {
 
+
                     FoodLog log = new FoodLog(
                             rs.getInt("food_id"),
                             rs.getInt("user_id"),
@@ -99,11 +97,11 @@ public class FoodLogDAO {
                             rs.getBigDecimal("protein_per_100g"),
                             rs.getBigDecimal("fats_per_100g"),
                             rs.getBigDecimal("carbs_per_100g"),
-
-
-                            rs.getInt("portion_size_grams")
-
-
+                            rs.getInt("portion_size_grams"),
+                            rs.getInt("calories"),
+                            rs.getBigDecimal("protein_g"),
+                            rs.getBigDecimal("fats_g"),
+                            rs.getBigDecimal("carbs_g")
                     );
                     logs.add(log);
                 }

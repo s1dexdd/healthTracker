@@ -1,6 +1,6 @@
 package com.healthtracker.dao;
 
-import com.healthtracker.app.Main;
+
 import com.healthtracker.model.User;
 import com.healthtracker.model.WeightLog;
 import com.healthtracker.model.WorkoutLog;
@@ -18,7 +18,8 @@ public class BMRDAO {
     }
     public int calculateBMR(int userId){
         User user=userDAO.selectUser(userId);
-        BigDecimal currentWeight=weightLogDAO.getLatestWeight(userId);
+
+        BigDecimal currentWeight=weightLogDAO.getAbsoluteLatestWeight(userId);
         if(user==null || currentWeight==null){
             return 0;
         }
@@ -33,9 +34,4 @@ public class BMRDAO {
             return (int) Math.round(447.593+(9.247 * weight)+(3.098 * heighthCm) -(4.330 * age));
         }
     }
-
-
 }
-
-
-

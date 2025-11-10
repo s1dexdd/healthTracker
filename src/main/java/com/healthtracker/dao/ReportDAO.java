@@ -1,7 +1,8 @@
 package com.healthtracker.dao;
-import com.healthtracker.dao.*;
+
 import com.healthtracker.model.User;
 import java.sql.Date;
+import java.util.Objects;
 
 public class ReportDAO {
     private final FoodLogDAO foodLogDAO;
@@ -10,32 +11,53 @@ public class ReportDAO {
     private final UserDAO userDAO;
 
     public ReportDAO(FoodLogDAO foodLogDAO, WorkoutLogDAO workoutLogDAO, BMRDAO bmrdao, UserDAO userDAO) {
-        this.foodLogDAO = foodLogDAO;
-        this.workoutLogDAO = workoutLogDAO;
-        this.bmrdao = bmrdao;
-        this.userDAO = userDAO;
+        this.foodLogDAO = Objects.requireNonNull(foodLogDAO, "FoodLogDAO не должен быть null");
+        this.workoutLogDAO = Objects.requireNonNull(workoutLogDAO, "WorkoutLogDAO не должен быть null");
+        this.bmrdao = Objects.requireNonNull(bmrdao, "BMRDAO не должен быть null");
+        this.userDAO = Objects.requireNonNull(userDAO, "UserDAO не должен быть null");
     }
-    public int calculateDailyTotalExpenditure(int userId,Date date) {
+
+    public int calculateDailyNeatExpenditure(int userId) {
+
         int bmr = bmrdao.calculateBMR(userId);
         User user = userDAO.selectUser(userId);
         if (user == null) {
             System.err.println("Ошибка: Пользователь с ID " + userId + " не найден.");
             return 0;
         }
+
+
         float coefficient;
         try {
-            coefficient=user.getActivityLevel().getCoefficient();
-        }catch (Exception e){
-            System.err.println("Предупреждение: Неизвестный или устаревший уровень активности. Используется коэффициент MID (1.55).");
-            coefficient = 1.55f;
+            coefficient = user.getActivityLevel().getCoefficient();
+        } catch (Exception e) {
+
+            coefficient = 1.20f;
+            System.err.println("Ошибка при получении коэффициента активности, установлен по умолчанию: " + coefficient);
         }
-        int neatExpenditure=(int) Math.round(bmr * coefficient);
-        int workoutExpenditure = workoutLogDAO.getDailyTotalBurned(userId, date);
-        return  neatExpenditure+workoutExpenditure;
+
+
+        return (int) Math.round(bmr * coefficient);
     }
+
+    public int calculateDailyTotalExpenditure(int userId, Date date) {
+
+        int neatExpenditure = calculateDailyNeatExpenditure(userId);
+
+
+        int workoutExpenditure = workoutLogDAO.getDailyTotalBurned(userId, date);
+
+        return neatExpenditure + workoutExpenditure;
+    }
+
     public int calculateDailyNetCalories(int userId, Date date){
-        int totalFoodCalories= foodLogDAO.getDailyTotalCalories(userId,date);
-        int totalBurnedCalories= calculateDailyTotalExpenditure(userId,date);
-        return totalFoodCalories-totalBurnedCalories;
+
+        int consumedCalories = foodLogDAO.getDailyTotalCalories(userId, date);
+
+
+        int totalExpenditure = calculateDailyTotalExpenditure(userId, date);
+
+
+        return consumedCalories - totalExpenditure;
     }
 }
