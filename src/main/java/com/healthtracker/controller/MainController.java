@@ -27,18 +27,19 @@ public class MainController {
     @FXML
     private TabPane mainTabPane;
 
-    @FXML private DatePicker logDatePicker;
+    @FXML private DatePicker logDatePicker; // Соответствует fx:id="logDatePicker"
     @FXML private TextField weightInput;
-    @FXML private Label weightStatusLabel;
+    @FXML private Label weightStatusLabel; // Соответствует fx:id="weightStatusLabel"
     @FXML private Label latestWeightLabel;
     @FXML private Label startWeightLabel;
     @FXML private Label targetWeightLabel;
     @FXML private Label bmiLabel;
     @FXML private TableView<WeightLog> weightLogTable;
-    @FXML private TableColumn<WeightLog, Date> colLogDate;
-    @FXML private TableColumn<WeightLog, BigDecimal> colCurrentWeight;
-    @FXML private TableColumn<WeightLog, Integer> colLogId;
+    @FXML private TableColumn<WeightLog, Date> colLogDate; // Соответствует fx:id="colLogDate"
+    @FXML private TableColumn<WeightLog, BigDecimal> colCurrentWeight; // Соответствует fx:id="colCurrentWeight"
+    @FXML private TableColumn<WeightLog, Integer> colLogId; // colLogId не используется в таблице, но объявлен.
     @FXML private Button deleteLogButton;
+
 
     private final int currentUserId;
     private User currentUser;
@@ -59,6 +60,8 @@ public class MainController {
 
         if (currentUser != null) {
             welcomeLabel.setText("Добро пожаловать, " + currentUser.getName() + " (ID: " + currentUserId + ")");
+            // !!! ДОБАВЛЕН ВЫЗОВ ДЛЯ ИНИЦИАЛИЗАЦИИ ВКЛАДКИ ВЕСА
+            initializeWeightTab();
 
         } else {
 
@@ -81,7 +84,7 @@ public class MainController {
     }
     private void setupWeightLogTable() {
 
-        colLogId.setCellValueFactory(new PropertyValueFactory<>("logId"));
+        // colLogId.setCellValueFactory(new PropertyValueFactory<>("logId")); // Эта колонка скрыта в FXML
         colLogDate.setCellValueFactory(new PropertyValueFactory<>("logDate"));
         colCurrentWeight.setCellValueFactory(new PropertyValueFactory<>("currentWeightKg"));
 
@@ -89,6 +92,7 @@ public class MainController {
         weightLogTable.setItems(weightLogData);
 
 
+        // Добавляем слушатель для активации/деактивации кнопки удаления
         weightLogTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     deleteLogButton.setDisable(newValue == null);
@@ -225,5 +229,3 @@ public class MainController {
 
 
 }
-
-
