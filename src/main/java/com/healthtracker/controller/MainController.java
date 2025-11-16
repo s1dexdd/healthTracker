@@ -4,6 +4,10 @@ import com.healthtracker.dao.UserDAO;
 import com.healthtracker.dao.WeightLogDAO;
 import com.healthtracker.model.User;
 import com.healthtracker.model.WeightLog;
+import com.healthtracker.dao.FoodLogDAO;
+import com.healthtracker.dao.WorkoutLogDAO;
+import com.healthtracker.dao.BMRDAO;
+import com.healthtracker.dao.ReportDAO;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,6 +20,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.sql.SQLException;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.layout.VBox;
 
 
 
@@ -27,18 +33,26 @@ public class MainController {
     @FXML
     private TabPane mainTabPane;
 
-    @FXML private DatePicker logDatePicker; // Соответствует fx:id="logDatePicker"
+    @FXML private DatePicker logDatePicker;
     @FXML private TextField weightInput;
-    @FXML private Label weightStatusLabel; // Соответствует fx:id="weightStatusLabel"
+    @FXML private Label weightStatusLabel;
     @FXML private Label latestWeightLabel;
     @FXML private Label startWeightLabel;
     @FXML private Label targetWeightLabel;
     @FXML private Label bmiLabel;
     @FXML private TableView<WeightLog> weightLogTable;
-    @FXML private TableColumn<WeightLog, Date> colLogDate; // Соответствует fx:id="colLogDate"
-    @FXML private TableColumn<WeightLog, BigDecimal> colCurrentWeight; // Соответствует fx:id="colCurrentWeight"
-    @FXML private TableColumn<WeightLog, Integer> colLogId; // colLogId не используется в таблице, но объявлен.
+    @FXML private TableColumn<WeightLog, Date> colLogDate;
+    @FXML private TableColumn<WeightLog, BigDecimal> colCurrentWeight;
+    @FXML private TableColumn<WeightLog, Integer> colLogId;
     @FXML private Button deleteLogButton;
+    @FXML private TextField settingsNameInput;
+    @FXML private TextField settingsHeightInput;
+    @FXML private TextField settingsStartWeightInput;
+    @FXML private TextField settingsTargetWeightInput;
+    @FXML private ChoiceBox<User.ActivityLevel> settingsActivityChoice;
+    @FXML private Label settingsStatusLabel;
+    @FXML
+    private VBox chartsContainer;
 
 
     private final int currentUserId;
@@ -46,6 +60,10 @@ public class MainController {
     private final UserDAO userDAO = new UserDAO();
     private final WeightLogDAO weightLogDAO = new WeightLogDAO();
     private final ObservableList<WeightLog> weightLogData = FXCollections.observableArrayList();
+    private final FoodLogDAO foodLogDAO = new FoodLogDAO();
+    private final WorkoutLogDAO workoutLogDAO = new WorkoutLogDAO();
+    private final BMRDAO bmrDAO = new BMRDAO(userDAO, weightLogDAO);
+    private final ReportDAO reportDAO = new ReportDAO(foodLogDAO, workoutLogDAO, bmrDAO, userDAO, weightLogDAO);
 
     public MainController(int userId) {
         this.currentUserId = userId;
@@ -60,8 +78,9 @@ public class MainController {
 
         if (currentUser != null) {
             welcomeLabel.setText("Добро пожаловать, " + currentUser.getName() + " (ID: " + currentUserId + ")");
-            // !!! ДОБАВЛЕН ВЫЗОВ ДЛЯ ИНИЦИАЛИЗАЦИИ ВКЛАДКИ ВЕСА
+
             initializeWeightTab();
+            initializeSettingsTab();
 
         } else {
 
@@ -84,7 +103,7 @@ public class MainController {
     }
     private void setupWeightLogTable() {
 
-        // colLogId.setCellValueFactory(new PropertyValueFactory<>("logId")); // Эта колонка скрыта в FXML
+
         colLogDate.setCellValueFactory(new PropertyValueFactory<>("logDate"));
         colCurrentWeight.setCellValueFactory(new PropertyValueFactory<>("currentWeightKg"));
 
@@ -92,7 +111,7 @@ public class MainController {
         weightLogTable.setItems(weightLogData);
 
 
-        // Добавляем слушатель для активации/деактивации кнопки удаления
+
         weightLogTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     deleteLogButton.setDisable(newValue == null);
@@ -156,20 +175,17 @@ public class MainController {
 
         BigDecimal latestWeight = weightLogDAO.getAbsoluteLatestWeight(currentUserId);
 
-
         if (latestWeight == null) {
             latestWeight = currentUser.getStartWeightKg();
         }
 
-
         latestWeightLabel.setText(latestWeight.toString() + " кг");
 
 
-        BigDecimal bmi = calculateBMI(latestWeight, currentUser.getHeightCm());
+        BigDecimal bmi = reportDAO.calculateBMI(currentUserId);
         bmiLabel.setText(bmi.toString());
 
-
-        String bmiCategory = getBMICategory(bmi);
+        String bmiCategory = reportDAO.getBMICategory(bmi);
         bmiLabel.setTooltip(new javafx.scene.control.Tooltip(bmiCategory));
     }
 
@@ -202,30 +218,77 @@ public class MainController {
             }
         });
     }
+    private void initializeSettingsTab() {
+
+        settingsActivityChoice.setItems(FXCollections.observableArrayList(User.ActivityLevel.values()));
 
 
+        settingsNameInput.setText(currentUser.getName());
+        settingsHeightInput.setText(String.valueOf(currentUser.getHeightCm()));
+        settingsStartWeightInput.setText(currentUser.getStartWeightKg().toString());
+        settingsTargetWeightInput.setText(currentUser.getTargetWeightKg().toString());
+        settingsActivityChoice.setValue(currentUser.getActivityLevel());
+    }
+    @FXML
+    private void handleSaveSettings(ActionEvent event) {
+        settingsStatusLabel.setText("");
+
+        try {
+
+            String newName = settingsNameInput.getText().trim();
+            int newHeight = Integer.parseInt(settingsHeightInput.getText().trim());
+            BigDecimal newStartWeight = new BigDecimal(settingsStartWeightInput.getText().trim().replace(',', '.'));
+            BigDecimal newTargetWeight = new BigDecimal(settingsTargetWeightInput.getText().trim().replace(',', '.'));
+            User.ActivityLevel newActivityLevel = settingsActivityChoice.getValue();
+
+            if (newName.isEmpty() || newHeight <= 0 || newStartWeight.compareTo(BigDecimal.ZERO) <= 0 || newTargetWeight.compareTo(BigDecimal.ZERO) <= 0 || newActivityLevel == null) {
+                settingsStatusLabel.setText("Пожалуйста, заполните все поля корректными данными.");
+                return;
+            }
 
 
-    private BigDecimal calculateBMI(BigDecimal weightKg, int heightCm) {
-        if (heightCm == 0) return BigDecimal.ZERO;
+            boolean success = userDAO.updateUserAllSettings(
+                    currentUserId,
+                    newName,
+                    newHeight,
+                    newStartWeight,
+                    newTargetWeight,
+                    newActivityLevel
+            );
 
-        BigDecimal heightM = new BigDecimal(heightCm).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal heightSquared = heightM.multiply(heightM);
+            if (success) {
 
-        if (heightSquared.compareTo(BigDecimal.ZERO) == 0) return BigDecimal.ZERO;
+                currentUser = userDAO.selectUser(currentUserId);
+                initializeSettingsTab();
+                initializeWeightTab();
+                welcomeLabel.setText("Добро пожаловать, " + currentUser.getName() + " (ID: " + currentUserId + ")"); // Обновляем приветствие
 
-        return weightKg.divide(heightSquared, 2, RoundingMode.HALF_UP);
+                settingsStatusLabel.setText("Настройки успешно сохранены!");
+                settingsStatusLabel.setStyle("-fx-text-fill: #4CAF50;");
+
+            } else {
+                settingsStatusLabel.setText("Ошибка при сохранении настроек в базу данных.");
+                settingsStatusLabel.setStyle("-fx-text-fill: #D32F2F;");
+            }
+
+        } catch (NumberFormatException e) {
+            settingsStatusLabel.setText("Неверный формат числа для роста или веса.");
+            settingsStatusLabel.setStyle("-fx-text-fill: #D32F2F;");
+        } catch (Exception e) {
+            settingsStatusLabel.setText("Произошла неизвестная ошибка: " + e.getMessage());
+            settingsStatusLabel.setStyle("-fx-text-fill: #D32F2F;");
+            e.printStackTrace();
+        }
+
     }
 
 
-    private String getBMICategory(BigDecimal bmi) {
-        if (bmi.compareTo(new BigDecimal("18.5")) < 0) return "Недостаточный вес";
-        if (bmi.compareTo(new BigDecimal("25.0")) < 0) return "Нормальный вес";
-        if (bmi.compareTo(new BigDecimal("30.0")) < 0) return "Избыточный вес (Предожирение)";
-        if (bmi.compareTo(new BigDecimal("35.0")) < 0) return "Ожирение I степени";
-        if (bmi.compareTo(new BigDecimal("40.0")) < 0) return "Ожирение II степени";
-        return "Ожирение III степени";
-    }
+
+
+
+
+
+
 
 
 }

@@ -14,6 +14,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ScrollPane?>
 
 <BorderPane prefHeight="600.0" prefWidth="800.0" style="-fx-background-color: #f0f4f7;"
             xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.healthtracker.controller.MainController">
@@ -31,7 +33,21 @@
             <tabs>
                 <Tab text="Статистика">
                     <content>
-                        <Label text="Здесь будет общая статистика и графики" />
+                        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                            <content>
+                                <VBox alignment="TOP_CENTER" spacing="20.0" style="-fx-padding: 20;">
+                                    <Label text="Графики и Статистика" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #00796B;" />
+
+                                    <VBox fx:id="chartsContainer" spacing="30.0" alignment="TOP_CENTER"
+                                          style="-fx-background-color: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+                                        <padding>
+                                            <Insets top="20.0" right="20.0" bottom="20.0" left="20.0" />
+                                        </padding>
+                                    </VBox>
+
+                                </VBox>
+                            </content>
+                        </ScrollPane>
                     </content>
                 </Tab>
 
@@ -129,6 +145,45 @@
                         <Label text="Секция для учета тренировок" />
                     </content>
                 </Tab>
+                <Tab text="Настройки">
+                    <content>
+                        <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-background-color: white;">
+                            <padding>
+                                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                            </padding>
+                            <Label text="Настройки Пользователя" style="-fx-font-weight: bold; -fx-text-fill: #00796B;">
+                                <font><Font size="20.0" /></font>
+                            </Label>
+
+                            <HBox alignment="CENTER_LEFT" spacing="20.0" style="-fx-padding: 10; -fx-background-color: #e0f2f1; -fx-border-radius: 8;">
+                                <VBox spacing="10.0">
+                                    <Label text="Имя:" />
+                                    <Label text="Рост (см):" />
+                                    <Label text="Начальный Вес (кг):" />
+                                    <Label text="Целевой Вес (кг):" />
+                                    <Label text="Уровень Активности:" />
+                                </VBox>
+                                <VBox spacing="5.0">
+                                    <TextField fx:id="settingsNameInput" prefWidth="200.0" />
+                                    <TextField fx:id="settingsHeightInput" prefWidth="200.0" />
+                                    <TextField fx:id="settingsStartWeightInput" prefWidth="200.0" />
+                                    <TextField fx:id="settingsTargetWeightInput" prefWidth="200.0" />
+                                    <ChoiceBox fx:id="settingsActivityChoice" prefWidth="200.0" />
+                                </VBox>
+                            </HBox>
+
+                            <Button onAction="#handleSaveSettings" text="Сохранить Изменения" style="-fx-background-color: #00796B; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;">
+                                <VBox.margin>
+                                    <Insets top="10.0" />
+                                </VBox.margin>
+                            </Button>
+
+                            <Label fx:id="settingsStatusLabel" text="" style="-fx-text-fill: #00796B;" />
+
+                        </VBox>
+                    </content>
+                </Tab>
+
             </tabs>
         </TabPane>
     </center>

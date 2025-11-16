@@ -20,6 +20,8 @@ public class UserDAO {
 
     private static final String UPDATE_USER_GOAL_SQL =
             "UPDATE \"USER\" SET target_weight_kg = ?, activity_level = ? WHERE user_id = ?";
+    private static final String UPDATE_USER_ALL_SETTINGS_SQL =
+            "UPDATE \"USER\" SET name = ?, height_cm = ?, start_weight_kg = ?, target_weight_kg = ?, activity_level = ? WHERE user_id = ?";
 
     public int insertUser(User user) {
 
@@ -97,6 +99,25 @@ public class UserDAO {
             }
         } catch (SQLException e) {
             System.err.println("Ошибка при обновлении цели пользователя с ID: " + userId);
+            e.printStackTrace();
+        }
+        return rowUpdated;
+    }
+    public boolean updateUserAllSettings(int userId, String name, int heightCm, BigDecimal startWeightKg, BigDecimal targetWeightKg, User.ActivityLevel activityLevel) {
+        boolean rowUpdated = false;
+        try (Connection connection = DBConfig.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_USER_ALL_SETTINGS_SQL)) {
+
+            preparedStatement.setString(1, name);
+            preparedStatement.setInt(2, heightCm);
+            preparedStatement.setBigDecimal(3, startWeightKg);
+            preparedStatement.setBigDecimal(4, targetWeightKg);
+            preparedStatement.setString(5, activityLevel.name());
+            preparedStatement.setInt(6, userId);
+
+            rowUpdated = preparedStatement.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Ошибка при обновлении всех настроек пользователя с ID: " + userId);
             e.printStackTrace();
         }
         return rowUpdated;

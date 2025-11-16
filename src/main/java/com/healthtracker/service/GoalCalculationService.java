@@ -70,9 +70,9 @@ public class GoalCalculationService {
                 dailyDeficitOrSurplus,
                 goalDescription,
                 totalWeightChangeKg,
-                proteinGrams, // Протеин
-                fatsGrams,    // Жиры
-                carbsGrams    // Углеводы
+                proteinGrams,
+                fatsGrams,
+                carbsGrams
         );
     }
 
