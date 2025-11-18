@@ -67,6 +67,7 @@ public class MainController {
 
     public MainController(int userId) {
         this.currentUserId = userId;
+        this.currentUser = userDAO.selectUser(userId);
     }
 
 
@@ -265,6 +266,7 @@ public class MainController {
 
                 settingsStatusLabel.setText("Настройки успешно сохранены!");
                 settingsStatusLabel.setStyle("-fx-text-fill: #4CAF50;");
+
 
             } else {
                 settingsStatusLabel.setText("Ошибка при сохранении настроек в базу данных.");

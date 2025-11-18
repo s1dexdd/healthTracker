@@ -61,13 +61,9 @@ public class DatabaseInitializer {
                     "  FOREIGN KEY (user_id) REFERENCES \"USER\"(user_id) ON DELETE CASCADE" +
                     ")";
 
-    private static final String INSERT_TEST_USER_SQL =
-            "MERGE INTO \"USER\" (user_id, name, height_cm, start_weight_kg, target_weight_kg, age, gender, activity_level) " +
-                    "KEY (user_id) VALUES (1, 'Тестовый Пользователь', 180, 85.0, 75.0, 30, 'MALE', 'MID')";
 
-    private static final String INSERT_INITIAL_WEIGHT_SQL =
-            "INSERT INTO \"WEIGHT_LOG\" (user_id, log_date, current_weight_kg) " +
-                    "SELECT 1, CURRENT_DATE(), 85.0 WHERE NOT EXISTS (SELECT 1 FROM \"WEIGHT_LOG\" WHERE user_id = 1 AND log_date = CURRENT_DATE())";
+
+
 
 
     public static void initialise(){
@@ -81,8 +77,8 @@ public class DatabaseInitializer {
             statement.executeUpdate(CREATE_WEIGHT_LOG_TABLE_SQL);
 
 
-            statement.executeUpdate(INSERT_TEST_USER_SQL);
-            statement.executeUpdate(INSERT_INITIAL_WEIGHT_SQL);
+
+
 
             System.out.println("база данных готова к работе. Добавлен тестовый пользователь (ID 1).");
         }catch(SQLException e){
